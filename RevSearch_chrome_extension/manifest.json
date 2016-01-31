@@ -1,0 +1,29 @@
+{
+  "manifest_version": 2,
+  "name": "Fashion Tech Hackathon",
+  "version": "1.3",
+  "author": "Kevin Du, Alan Du",
+  "description": "Fashion Tech Hackathon",
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+
+  // "content_scripts": [ {
+  //   "matches": [
+  //       "http://*/*",
+  //       "https://*/*"
+  //       ],
+  //   "js": ["myscript.js"]
+  // } ], 
+
+  "icons": {
+    "128": "icon.png"
+  },
+
+  "permissions": [
+    //"activeTab"
+    "tabs"
+  ]
+}
