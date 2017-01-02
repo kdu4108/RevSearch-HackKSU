@@ -21,7 +21,7 @@ public class AmazonCrawler{
             return "";
         }
         else{
-            Document doc_root = Jsoup.connect(url).get(); //.userAgent("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36")
+            Document doc_root = Jsoup.connect(url).userAgent("Mozilla/17.0").timeout(5000).get(); //.userAgent("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36")
             //System.out.println(url);
             // Get all reviews on the page
             Elements reviews_elements = doc_root.select("span.a-size-base.review-text");
@@ -50,7 +50,7 @@ public class AmazonCrawler{
                 pagenum++;
                 if (pagenum > 3) break;
                 //System.setProperty("http.agent", "");
-                Document doc = Jsoup.connect(nextlink).userAgent("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36").get(); // set user agent to avoid HTTP 503 (bot?) error
+                Document doc = Jsoup.connect(nextlink).userAgent("Mozilla/17.0").timeout(5000).get(); // set user agent to avoid HTTP 503 (bot?) error
                 
                 // Get all reviews on the page
                 reviews_elements = doc.select("span.a-size-base.review-text");
@@ -71,7 +71,7 @@ public class AmazonCrawler{
     
     public static void main(String[] args) throws IOException  {
         System.out.println("hello");
-        AmazonCrawler ac = new AmazonCrawler("http://www.amazon.com/Unlocked-Android-MTK6572-Smartphone-598-0~1203-0MHz/product-reviews/B016NX0C8M/ref=cm_cr_dp_see_all_summary?ie=UTF8&showViewpoints=1&sortBy=helpful");
+        AmazonCrawler ac = new AmazonCrawler("https://www.amazon.com/Casio-MQ24-1E-Black-Resin-Watch/product-reviews/B000GAWSHM/ref=cm_cr_dp_see_all_summary?ie=UTF8&showViewpoints=1&sortBy=helpful");
         System.out.println(ac.returnAllReviewsOneString());
     }
 }

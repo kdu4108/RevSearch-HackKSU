@@ -35,6 +35,7 @@ public class Main {
           String output = "";
           // process your input here and compute the output
           output = combineGetACRLAndAC(input);
+          output = output + "\n\n";
           return output;
         }
       };

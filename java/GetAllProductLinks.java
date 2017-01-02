@@ -13,12 +13,17 @@ public class GetAllProductLinks {
   public GetAllProductLinks(String urlInput) {
     url = urlInput;
   }
-  public ArrayList<String> returnAllProductLinks() throws IOException{
-    Document doc = Jsoup.connect(url).get(); //can't add to this one
+  public ArrayList<String> returnAllProductLinks() throws IOException, InterruptedException{
+    Document doc = Jsoup.connect(url).userAgent("Mozilla/17.0").timeout(5000).get(); //can't add to this one
+//    Document doc = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1").get(); //can't add to this one  http://www.useragentstring.com/Firefox40.1_id_19879.php
+//    System.out.println("processed doc");
+    Thread.sleep(100);
+
     //System.out.println(doc.toString());
     //make Elements of (hopefully) all links on the page that is in the middle (under ul id = s-results-list-atf)
-    Elements products = doc.select("ul#s-results-list-atf a.a-link-normal.s-access-detail-page.a-text-normal");
-   // System.out.println(products.size());
+//    Elements products = doc.select("ul#s-results-list-atf a.a-link-normal.s-access-detail-page.a-text-normal");
+    Elements products = doc.select("div.a-row.s-result-list-parent-container a.a-link-normal.s-access-detail-page.a-text-normal");
+//    System.out.println(products.size());
     
     ArrayList<String> allproducts = new ArrayList<String>();
     //print all links of products in Elements, add to StringBuilder allproducts
@@ -28,6 +33,7 @@ public class GetAllProductLinks {
     }
     //create Elements list of next links (id=pagnNextLink)
     Elements nextlink_elements = doc.select("#pagnNextLink"); 
+//    System.out.println(nextlink_elements);
     //if more than one next button
     if (nextlink_elements.size() > 1) throw new RuntimeException("Uh oh there is more than one next button");
     //get nextlink URL as string
@@ -35,17 +41,19 @@ public class GetAllProductLinks {
     int pagenum = 1;
     while (nextlink_elements.size() != 0) {
       //TimeUnit.MILLISECONDS.sleep(100); // delay to avoid HTTP 503 error
-      //System.out.println("on page " + pagenum);
+//      System.out.println("on page " + pagenum);
       pagenum++;
-      if (pagenum > 1) break;
+      if (pagenum > 5) break;
       //System.setProperty("http.agent", "");
-      System.out.println(nextlink);
+//      System.out.println(nextlink);
 //      Document docNext = Jsoup.connect(nextlink).userAgent("Mozilla/5.0").get(); // set user agent to avoid HTTP 503 (bot?) error
-      Document docNext = Jsoup.connect(nextlink).userAgent("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36").get();
-//      TimeUnit.MILLISECONDS.sleep(100); // delay to avoid HTTP 503 error
+      Document docNext = Jsoup.connect(nextlink).userAgent("Mozilla/17.0").timeout(5000).get();
+
+      Thread.sleep(100); // delay to avoid HTTP 503 error
+//      System.out.println(docNext);
       // Get all products on the page
-      products = docNext.select("ul#s-results-list-atf a.a-link-normal.s-access-detail-page.a-text-normal");
-      System.out.println(products.size());
+      products = docNext.select("div.a-row.s-result-list-parent-container a.a-link-normal.s-access-detail-page.a-text-normal");
+//      System.out.println(products.size());
       for (Element product : products) {
         allproducts.add(product.attr("abs:href"));
 //        System.out.println(product.attr("abs:href"));
@@ -62,6 +70,24 @@ public class GetAllProductLinks {
 //        
 //    }
     return allproducts;
-  // System.out.println(allproducts.size());
+    // System.out.println(allproducts.size());
+  }
+  public static void main(String[] args) throws IOException, InterruptedException {
+    System.out.println("hello");
+    GetAllProductLinks listlinks = new GetAllProductLinks(args[0]);
+    ArrayList<String>links = new ArrayList<String>();
+    ArrayList<String>titles = new ArrayList<String>();
+    links = listlinks.returnAllProductLinks();
+    System.out.println(links);
+    System.out.println(links.size());
+//    for(String link: links){
+//      Document docNewLink = Jsoup.connect(link).userAgent("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36").get();
+//      if (!(titles.contains(docNewLink.select("span#productTitle").text()))){
+//        titles.add(docNewLink.select("span#productTitle").text());
+//        System.out.println(docNewLink.select("span#productTitle").text());
+//      }
+//    }
+//    System.out.println(titles);
+//    System.out.println(titles.size());
   }
 }
